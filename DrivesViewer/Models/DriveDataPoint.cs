@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Models/DriveDataPoint.cs
+using System;
 
 namespace DrivesViewer.Models
 {
@@ -12,6 +13,9 @@ namespace DrivesViewer.Models
         public bool InCurve { get; set; }
         public double Roll { get; set; }
         public double Ax { get; set; }
-        public char CircuitCurveTurnDirection { get; set; }
+        // Změna na nullable char
+        public char? CircuitCurveTurnDirection { get; set; }
+
+        public Recording Recording { get; set; }
     }
 }

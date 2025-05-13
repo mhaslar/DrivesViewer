@@ -18,17 +18,20 @@ namespace DrivesViewer.Views
         {
             InitializeComponent();
 
-            // načteme connection string
+            driveViewer.PointSelected += pt =>
+            {
+                pointDetail.SetPoint(pt);
+            };
+
+
             _connString = ConfigurationManager
                 .ConnectionStrings["DrivesDb"]
                 .ConnectionString;
 
             LoadRecordings();
 
-            // když uživatel zvolí jiný záznam
             recordingSelectorControl.RecordingChanged += OnRecordingChanged;
 
-            // přepínání režimů vykreslení
             rbCurve.CheckedChanged += (s, e) =>
             {
                 if (rbCurve.Checked)
@@ -46,7 +49,6 @@ namespace DrivesViewer.Views
                 }
             };
 
-            // otevření dialogu Nastavení
             settingsToolStripMenuItem.Click += (s, e) =>
             {
                 using var dlg = new SettingsForm();
@@ -82,12 +84,19 @@ namespace DrivesViewer.Views
                              Ax,
                              CircuitCurveTurnDirection
                       FROM DriveData
-                      WHERE Id = @Id
+                      WHERE RecordingId = @Id                -- opraveno z WHERE Id
                       ORDER BY TimeFromStartSeconds",
                     new { Id = recordingId })
                 .ToList();
+
+            // načteme data do rendereru
             driveViewer.LoadData(pts);
-            pointDetail.SetPoint(null);
+
+            // pokud existují body, zobrazíme první
+            if (pts.Any())
+                pointDetail.SetPoint(pts.First());
+            else
+                pointDetail.SetPoint(null);
         }
     }
 }
