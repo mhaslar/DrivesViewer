@@ -18,10 +18,12 @@ namespace DrivesViewer.Views
         {
             InitializeComponent();
 
-            driveViewer.PointSelected += pt =>
+            // v konstruktoru po InitializeComponent()
+            driveViewer.PointSelected += (pt, accel) =>
             {
-                pointDetail.SetPoint(pt);
+                pointDetail.SetPoint(pt, accel);
             };
+
 
 
             _connString = ConfigurationManager
@@ -84,19 +86,28 @@ namespace DrivesViewer.Views
                              Ax,
                              CircuitCurveTurnDirection
                       FROM DriveData
-                      WHERE RecordingId = @Id                -- opraveno z WHERE Id
+                      WHERE RecordingId = @Id
                       ORDER BY TimeFromStartSeconds",
                     new { Id = recordingId })
                 .ToList();
 
-            // načteme data do rendereru
             driveViewer.LoadData(pts);
 
-            // pokud existují body, zobrazíme první
             if (pts.Any())
-                pointDetail.SetPoint(pts.First());
+            {
+                var first = pts.First();
+                // Pro první bod spočteme akceleraci vůči sobě samému (0), 
+                // nebo vůči druhému bodu, pokud existuje:
+                double accel = pts.Count > 1
+                    ? pts[1].SpeedRec - pts[0].SpeedRec
+                    : 0.0;
+                pointDetail.SetPoint(first, accel);
+            }
             else
-                pointDetail.SetPoint(null);
+            {
+                // Při nullu předáme i 0 jako accel
+                pointDetail.SetPoint(null, 0.0);
+            }
         }
     }
 }

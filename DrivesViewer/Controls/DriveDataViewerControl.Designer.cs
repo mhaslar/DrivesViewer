@@ -6,7 +6,6 @@ namespace DrivesViewer.Controls
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // control je zároven plná plocha svého kontejneru
             this.BackColor = System.Drawing.Color.White;
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ResumeLayout(false);

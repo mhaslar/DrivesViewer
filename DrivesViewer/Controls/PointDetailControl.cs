@@ -9,6 +9,7 @@ namespace DrivesViewer.Controls
     public partial class PointDetailControl : UserControl
     {
         private DriveDataPoint _pt;
+        private double _accel;
 
         public PointDetailControl()
         {
@@ -17,11 +18,12 @@ namespace DrivesViewer.Controls
         }
 
         /// <summary>
-        /// Nastaví bod, jehož detaily se budou vykreslovat.
+        /// Nastaví bod a akceleraci, vykreslí detail.
         /// </summary>
-        public void SetPoint(DriveDataPoint pt)
+        public void SetPoint(DriveDataPoint pt, double accel)
         {
             _pt = pt;
+            _accel = accel;
             Invalidate();
         }
 
@@ -33,46 +35,52 @@ namespace DrivesViewer.Controls
 
             if (_pt == null)
             {
-                // žádný bod není vybraný
-                using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                using var sf = new StringFormat
                 {
-                    g.DrawString("Vyberte bod", Font, Brushes.Gray, ClientRectangle, sf);
-                }
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+                g.DrawString("Vyberte bod", Font, Brushes.Gray, ClientRectangle, sf);
                 return;
             }
 
-            const int textX = 10;
-            int y = 10;
-            int lineHeight = (int)(Font.GetHeight(e.Graphics) + 4);
+            int x = 10, y = 10;
+            int lh = (int)(Font.GetHeight(e.Graphics) + 4);
 
-            // Čas od startu
-            g.DrawString($"Čas: {_pt.TimeFromStartSeconds}s", Font, Brushes.Black, textX, y);
-            y += lineHeight;
-
+            // Čas
+            g.DrawString($"Čas: {_pt.TimeFromStartSeconds}s", Font, Brushes.Black, x, y);
+            y += lh;
             // Rychlost
-            g.DrawString($"Rychlost: {_pt.SpeedRec:F1} km/h", Font, Brushes.Black, textX, y);
-            y += lineHeight;
-
+            g.DrawString($"Rychlost: {_pt.SpeedRec:F1} km/h", Font, Brushes.Black, x, y);
+            y += lh;
             // Náklon
-            g.DrawString($"Roll: {_pt.Roll:F1}°", Font, Brushes.Black, textX, y);
-            y += lineHeight;
-
+            g.DrawString($"Roll: {_pt.Roll:F1}°", Font, Brushes.Black, x, y);
+            y += lh;
             // Brzdí / zrychluje
-            var accelText = _pt.SpeedRec - (_pt.Roll * 0) < 0 ? "Brzdí" : "Zrychluje";
-            g.DrawString(accelText, Font, Brushes.Black, textX, y);
+            var txt = _accel < 0 ? "Brzdí" : "Zrychluje";
+            g.DrawString(txt, Font, Brushes.Black, x, y);
+            y += lh + 10;
 
-            // Jednoduchý grafický model motocyklu v dolní části
-            var bikeWidth = 40;
-            var bikeHeight = 10;
-            var centerX = ClientSize.Width - bikeWidth - 10;
-            var centerY = ClientSize.Height - bikeHeight - 10;
+            // Vykreslení jednoduché motorky s koly a náklonem
+            int bodyW = 40, bodyH = 10;
+            float cx = ClientSize.Width / 2f;
+            float cy = ClientSize.Height - bodyH - 20;
 
-            g.TranslateTransform(centerX + bikeWidth / 2f, centerY + bikeHeight / 2f);
+            g.TranslateTransform(cx, cy);
             g.RotateTransform((float)_pt.Roll);
-            using (var brush = new SolidBrush(Color.Gray))
+
+            // Tělo
+            using (var bodyBrush = new SolidBrush(Color.Gray))
+                g.FillRectangle(bodyBrush, -bodyW / 2f, -bodyH / 2f, bodyW, bodyH);
+
+            // Kola
+            float wheelR = bodyH;
+            using (var wheelBrush = new SolidBrush(Color.Black))
             {
-                g.FillRectangle(brush, -bikeWidth / 2f, -bikeHeight / 2f, bikeWidth, bikeHeight);
+                g.FillEllipse(wheelBrush, -bodyW / 2f - wheelR / 2, -wheelR / 2, wheelR, wheelR);
+                g.FillEllipse(wheelBrush, bodyW / 2f - wheelR / 2, -wheelR / 2, wheelR, wheelR);
             }
+
             g.ResetTransform();
         }
     }
