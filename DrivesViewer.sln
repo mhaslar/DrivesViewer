@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35931.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivesViewer", "DrivesViewer\DrivesViewer.csproj", "{5998C5DC-2201-4584-9676-DC2D180C5DFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5998C5DC-2201-4584-9676-DC2D180C5DFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5998C5DC-2201-4584-9676-DC2D180C5DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5998C5DC-2201-4584-9676-DC2D180C5DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5998C5DC-2201-4584-9676-DC2D180C5DFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8E5CDA2E-318B-4D29-83C9-E0906B42446A}
+	EndGlobalSection
+EndGlobal
